@@ -13,6 +13,6 @@ cp ./contrib/kubespray/config/*.yaml ./cluster-configuration/
 ./paictl.py config push --cluster-conf-path ./cluster-configuration -m service <cluster-id
 
 echo "Starting OpenPAI service..."
-./paictl.py service start < cluster-id
+./paictl.py service start -k device-plugin <cluster-id
 
 rm cluster-id
