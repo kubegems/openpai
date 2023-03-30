@@ -21,10 +21,10 @@ import readline
 import logging
 import logging.config
 
-from paiLibrary.paiService import service_management_start
-from paiLibrary.paiService import service_management_stop
-from paiLibrary.paiService import service_management_delete
-from paiLibrary.paiService import service_management_refresh
+from .paiLibrary.paiService import service_management_start
+from .paiLibrary.paiService import service_management_stop
+from .paiLibrary.paiService import service_management_delete
+from .paiLibrary.paiService import service_management_refresh
 
 logger = logging.getLogger(__name__)
 

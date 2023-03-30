@@ -57,7 +57,7 @@ def create_path(path):
 
 
 def read_file_from_path(file_path):
-    with open(file_path, "r") as fin:
+    with open(file_path, "rb") as fin:
         file_data = fin.read().decode('utf-8')
     return file_data
 
@@ -72,7 +72,7 @@ def load_yaml_config(config_path):
 
 def write_generated_file(generated_file, file_path):
 
-    with open(file_path, "w+") as fout:
+    with open(file_path, "wb+") as fout:
         fout.write(generated_file.encode('utf-8'))
 
 

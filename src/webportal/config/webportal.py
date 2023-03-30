@@ -17,7 +17,7 @@
 
 import json
 import urllib
-import urlparse
+from urllib.parse import urlparse
 
 
 class Webportal:

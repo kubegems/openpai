@@ -18,7 +18,7 @@
 import os
 import sys
 import time
-import common
+from . import common
 import readline
 import logging
 import logging.config

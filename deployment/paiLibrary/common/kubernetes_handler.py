@@ -109,7 +109,7 @@ def get_configmap(PAI_KUBE_CONFIG_DEFAULT_LOCATION, name, namespace = "default")
     target_configmap_metadata = None
 
     try:
-        api_response = api_instance.read_namespaced_config_map(name, namespace, exact=exact, export=export)
+        api_response = api_instance.read_namespaced_config_map(name, namespace)
         target_configmap_data = api_response.data
         target_configmap_metadata = api_response.metadata
 
