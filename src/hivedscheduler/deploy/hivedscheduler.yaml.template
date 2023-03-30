@@ -79,28 +79,41 @@ spec:
       - name: {{ cluster_cfg["cluster"]["docker-registry"]["secret-name"] }}
       containers:
       - name: defaultscheduler
-        image: {{ cluster_cfg["cluster"]["docker-registry"]["prefix"] }}kube-scheduler:{{ cluster_cfg["cluster"]["docker-registry"]["tag"] }}
+        image: registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:v1.25.0
         imagePullPolicy: Always
-        command: [
-          "sh", "-c",
-          "echo \"apiVersion: kubescheduler.config.k8s.io/v1alpha1\" >> config.yaml &&
-           echo \"kind: KubeSchedulerConfiguration\" >> config.yaml &&
-           echo \"schedulerName: hivedscheduler-ds-{{ vc }}\" >> config.yaml &&
-           echo \"disablePreemption: false\" >> config.yaml &&
-           echo \"percentageOfNodesToScore: 100\" >> config.yaml &&
-           echo \"algorithmSource:\" >> config.yaml &&
-           echo \"  policy:\" >> config.yaml &&
-           echo \"    configMap:\" >> config.yaml &&
-           echo \"      name: hivedscheduler-config\" >> config.yaml &&
-           echo \"      namespace: default\" >> config.yaml &&
-           echo \"leaderElection:\" >> config.yaml &&
-           echo \"  leaderElect: false\" >> config.yaml &&
-           /usr/local/bin/kube-scheduler
-        {%- if cluster_cfg['cluster']['common']['k8s-rbac'] != 'true' %}
-           --master={{ cluster_cfg['layout']['kubernetes']['api-servers-url'] }}
-        {%- endif %}
-           --config=config.yaml
-           --feature-gates=PodPriority=true
-           --leader-elect=false
-           --v=4"]
+        command:
+          - /usr/local/bin/kube-scheduler
+          - --config=/config/config.yaml
+          - --leader-elect=false
+          - --v=4
+        volumeMounts:
+          - mountPath: /config
+            name: config
+      volumes:
+      - name: config
+        configMap:
+          name: hivedscheduler-ds-{{ vc }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hivedscheduler-ds-{{ vc }}
+data:
+  config.yaml: |
+    apiVersion: kubescheduler.config.k8s.io/v1
+    kind: KubeSchedulerConfiguration
+    profiles:
+      - schedulerName: hivedscheduler-ds-{{ vc }}
+    extenders:
+      - urlPrefix: "http://hivedscheduler-service:30096/v1/extender"
+        filterVerb: "filter"
+        preemptVerb: "preempt"
+        bindVerb: "bind"
+        enableHTTPS: false
+        httpTimeout: 1m
+        nodeCacheCapable: true
+        ignorable: false
+        managedResources:
+          - name: "hivedscheduler.microsoft.com/pod-scheduling-enable"
+            ignoredByScheduler: true
 {%- endfor %}
