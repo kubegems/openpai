@@ -96,7 +96,10 @@ def main(args):
 
     # execute the command: call the "handler" with parsed arguments
     parserd = parser.parse_args(args)
-    parserd.handler(parserd)
+    if hasattr(parserd, "handler"):
+        parserd.handler(parserd)
+    else:
+        parser.print_help()
 
 
 if __name__ == "__main__":

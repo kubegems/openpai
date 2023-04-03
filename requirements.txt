@@ -1,0 +1,6 @@
+pyyaml
+paramiko
+jinja2
+python-etcd
+kubernetes
+gitpython
